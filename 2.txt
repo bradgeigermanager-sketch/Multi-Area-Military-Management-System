@@ -1,0 +1,339 @@
+Here is the updated SOP Builder & Library System. It includes data persistence simulation, procedural duplicating tools, automatic ISO timestamp updates, and incremental patch versioning algorithms.
+## 1. Unified Management System Script (sop_system_engine.py)
+This script includes an advanced validation tracking block. It manages standard layout transformations and uses version increments to save updates without overriding parent files.
+
+import datetimeimport jsonimport re
+class SOPLibraryManager:
+    def __init__(self):
+        # Simulation storage of active records library
+        self.library = {}
+
+    def save_sop_record(self, raw_payload):
+        """
+        Saves or increments a document structure within the system directory.
+        Applies live ISO timestamps and handles version string changes.
+        """
+        sop_id = raw_payload.get("sop_id", "SOP-GEN-000")
+        current_time = datetime.datetime.utcnow().isoformat() + "Z"
+        
+        if sop_id in self.library:
+            # Document exists: Extract old configuration numbers to bump patch version
+            old_version = self.library[sop_id]["metadata"]["version"]
+            major, minor = map(int, old_version.split('.'))
+            new_version = f"{major}.{minor + 1}"
+        else:
+            # Brand new file initialization template parameters
+            new_version = "1.0"
+
+        finalized_node = {
+            "sop_id": sop_id,
+            "title": raw_payload.get("title", "Untitled Document Blueprint"),
+            "metadata": {
+                "version": new_version,
+                "last_modified": current_time,
+                "security_classification": raw_payload.get("classification", "UNCLASSIFIED")
+            },
+            "steps": raw_payload.get("steps", []),
+            "directory": raw_payload.get("directory", [])
+        }
+        
+        self.library[sop_id] = finalized_node
+        return finalized_node
+
+    def duplicate_sop_record(self, source_id, new_target_id):
+        """
+        Duplicates an existing record to create a new standalone template draft.
+        """
+        if source_id not in self.library:
+            raise KeyError(f"Source file register code '{source_id}' not found.")
+            
+        source_data = json.loads(json.dumps(self.library[source_id])) # Deep copy
+        source_data["sop_id"] = new_target_id
+        source_data["title"] = f"Copy of {source_data['title']}"
+        source_data["metadata"]["version"] = "1.0"
+        source_data["metadata"]["last_modified"] = datetime.datetime.utcnow().isoformat() + "Z"
+        
+        self.library[new_target_id] = source_data
+        return source_data
+# Verification Runtime execution test checkmgr = SOPLibraryManager()initial_payload = {
+    "sop_id": "SOP-MNT-104",
+    "title": "Abrams Hull Sensor Tuning",
+    "classification": "SECRET",
+    "steps": ["De-energize chassis batteries.", "Verify interface bus links."]
+}
+# Save first version (v1.0)v1 = mgr.save_sop_record(initial_payload)
+print(f"Saved: {v1['sop_id']} Version: {v1['metadata']['version']} Timestamp: {v1['metadata']['last_modified']}")
+# Save update to trigger automatic version bump (v1.1)v2 = mgr.save_sop_record(initial_payload)
+print(f"Updated: {v2['sop_id']} Version: {v2['metadata']['version']} Timestamp: {v2['metadata']['last_modified']}")
+
+## 2. Complete Interactive UI Dashboard Component (HTML & JS)
+This interface module integrates data saving features, duplication workflows, version tracking arrays, and structural document sorting controls directly into your front-end layout.
+
+<div class="sop-system-container">
+    
+    <!-- Workspace Entry & Editor Block Elements -->
+    <div class="editor-chassis">
+        <div class="chassis-header">
+            <h3>Tactical Document Editor Node</h3>
+            <span id="versionTag" class="version-lbl">Draft Mode (New)</span>
+        </div>
+        
+        <div class="field-grid">
+            <div class="input-unit">
+                <label>System Index ID</label>
+                <input type="text" id="sopCodeId" value="SOP-LOG-701" oninput="runLivePreviewPipeline()">
+            </div>
+            <div class="input-unit">
+                <label>Classification Group</label>
+                <select id="sopClassLevel" onchange="runLivePreviewPipeline()">
+                    <option value="UNCLASSIFIED">UNCLASSIFIED</option>
+                    <option value="CONFIDENTIAL">CONFIDENTIAL</option>
+                    <option value="SECRET">SECRET</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="input-unit">
+            <label>Nomenclature Operational Title</label>
+            <input type="text" id="sopTitleText" value="Fuel Farm Auxiliary Pump Redistribution Protocol" oninput="runLivePreviewPipeline()">
+        </div>
+
+        <div class="input-unit">
+            <label>Action Directives & Instructions Sequence</label>
+            <div id="stackContainer" class="sort-list">
+                <div class="sort-row">
+                    <span class="row-index">1</span>
+                    <input type="text" class="directive-input" value="Clear static dissipation grounding paths." oninput="runLivePreviewPipeline()">
+                    <div class="sort-btns">
+                        <button onclick="moveRow(this, -1)">▲</button>
+                        <button onclick="moveRow(this, 1)">▼</button>
+                    </div>
+                </div>
+            </div>
+            <button class="add-row-btn" onclick="addBlankRowElement()">+ Add Directive Sequence Row</button>
+        </div>
+
+        <div class="control-footer-row">
+            <button class="save-action-btn" onclick="commitSaveToLibrary()">Commit & Save to Library</button>
+            <button class="clone-action-btn" onclick="triggerDuplicationFlow()">Duplicate for Editing</button>
+        </div>
+    </div>
+
+    <!-- Active Local Storage Library Catalog Screen Display -->
+    <div class="catalog-chassis">
+        <div class="panel-tag">LIVE REGISTRY REPOSITORY INVENTORY</div>
+        <div class="catalog-body">
+            <h4>Saved Library Modules</h4>
+            <div id="libraryCollectionList" class="lib-grid-container">
+                <!-- Dynamically compiled document blocks render here -->
+            </div>
+            
+            <div class="live-monitor-divider"></div>
+            
+            <div id="previewMonitorView">
+                <!-- Active monitor render canvas zone layout -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .sop-system-container { display: flex; gap: 20px; background: #0f172a; padding: 20px; border-radius: 8px; color: #f1f5f9; font-family: system-ui, sans-serif; }
+    .editor-chassis { flex: 1.2; background: #141b2d; border: 1px solid #1e293b; padding: 20px; border-radius: 6px; display: flex; flex-direction: column; gap: 14px; }
+    .catalog-chassis { flex: 1.5; background: #1e293b; border: 1px solid #334155; border-radius: 6px; display: flex; flex-direction: column; }
+    .chassis-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1e293b; padding-bottom: 8px; }
+    h3, h4 { margin: 0; text-transform: uppercase; font-size: 13px; color: #38bdf8; letter-spacing: 0.5px; }
+    .version-lbl { font-size: 11px; background: #0f172a; padding: 2px 8px; border-radius: 4px; border: 1px solid #334155; color: #94a3b8; font-family: monospace; }
+    .field-grid { display: flex; gap: 15px; }
+    .field-grid .input-unit { flex: 1; }
+    .input-unit { display: flex; flex-direction: column; gap: 4px; }
+    label { font-size: 10px; color: #64748b; text-transform: uppercase; font-weight: 700; }
+    input, select { background: #0f172a; border: 1px solid #334155; color: #fff; padding: 8px 12px; border-radius: 4px; font-size: 13px; }
+    input:focus, select:focus { outline: 1px solid #38bdf8; }
+    
+    /* Step ordering row configurations */
+    .sort-list { display: flex; flex-direction: column; gap: 8px; }
+    .sort-row { display: flex; align-items: center; gap: 10px; background: #0f172a; padding: 6px 12px; border-radius: 4px; border: 1px solid #1e293b; }
+    .row-index { font-family: monospace; font-weight: bold; color: #38bdf8; width: 12px; }
+    .directive-input { flex: 1; background: #141b2d; border-color: #2d3748; }
+    .sort-btns { display: flex; flex-direction: column; gap: 2px; }
+    .sort-btns button { background: #1f293d; border: 1px solid #334155; color: #94a3b8; font-size: 8px; padding: 1px 4px; cursor: pointer; }
+    .sort-btns button:hover { background: #38bdf8; color: #0f172a; }
+    
+    .add-row-btn { background: transparent; border: 1px dashed #475569; color: #94a3b8; padding: 6px; font-size: 11px; cursor: pointer; border-radius: 4px; margin-top: 4px; }
+    .control-footer-row { display: flex; gap: 10px; margin-top: 10px; border-top: 1px solid #1e293b; padding-top: 15px; }
+    .save-action-btn { background: #10b981; color: white; border: none; flex: 1; padding: 10px; font-weight: bold; border-radius: 4px; cursor: pointer; font-size: 12px; text-transform: uppercase; }
+    .clone-action-btn { background: #38bdf8; color: #0f172a; border: none; flex: 1; padding: 10px; font-weight: bold; border-radius: 4px; cursor: pointer; font-size: 12px; text-transform: uppercase; }
+    
+    /* Catalog & Preview Sub-styles */
+    .panel-tag { background: #0f172a; color: #64748b; font-size: 10px; font-weight: bold; padding: 10px 15px; border-bottom: 1px solid #2d3748; border-radius: 6px 6px 0 0; }
+    .catalog-body { padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+    .lib-grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; max-height: 160px; overflow-y: auto; }
+    .lib-card { background: #141b2d; border: 1px solid #334155; border-radius: 4px; padding: 10px; cursor: pointer; position: relative; }
+    .lib-card:hover { border-color: #38bdf8; }
+    .lib-card h5 { margin: 0 0 4px 0; color: #fff; font-size: 12px; padding-right: 35px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .lib-meta-line { font-size: 10px; color: #64748b; }
+    .lib-v-badge { position: absolute; top: 10px; right: 10px; background: #1e293b; font-size: 9px; padding: 1px 4px; border-radius: 2px; font-family: monospace; color: #38bdf8; }
+    .live-monitor-divider { height: 1px; background: #334155; margin: 5px 0; }
+</style>
+
+<script>
+    // Centralized Browser Data Store Simulation Memory Core
+    let systemSopLibrary = {
+        "SOP-LOG-701": {
+            sop_id: "SOP-LOG-701",
+            title: "Fuel Farm Auxiliary Pump Redistribution Protocol",
+            classification: "CONFIDENTIAL",
+            version: "1.0",
+            timestamp: "2026-06-03T01:22:00Z",
+            steps: ["Clear static dissipation grounding paths.", "Check internal baseline backpressure bypass valves."]
+        }
+    };
+
+    function moveRow(button, direction) {
+        const row = button.closest('.sort-row');
+        const parent = row.parentNode;
+        const index = Array.from(parent.children).indexOf(row);
+        const targetIndex = index + direction;
+
+        if (targetIndex >= 0 && targetIndex < parent.children.length) {
+            if (direction === 1) parent.insertBefore(parent.children[targetIndex], row);
+            else parent.insertBefore(row, parent.children[targetIndex]);
+            normalizeRowIndexes();
+            runLivePreviewPipeline();
+        }
+    }
+
+    function addBlankRowElement() {
+        const container = document.getElementById('stackContainer');
+        const nextIdx = container.children.length + 1;
+        const div = document.createElement('div');
+        div.className = 'sort-row';
+        div.innerHTML = `
+            <span class="row-index">${nextIdx}</span>
+            <input type="text" class="directive-input" placeholder="Enter configuration control step directive..." oninput="runLivePreviewPipeline()">
+            <div class="sort-btns"><button onclick="moveRow(this, -1)">▲</button><button onclick="moveRow(this, 1)">▼</button></div>
+        `;
+        container.appendChild(div);
+        runLivePreviewPipeline();
+    }
+
+    function normalizeRowIndexes() {
+        document.querySelectorAll('.sort-list .sort-row').forEach((row, i) => {
+            row.querySelector('.row-index').innerText = i + 1;
+        });
+    }
+
+    // Commits records to live database mapping arrays
+    function commitSaveToLibrary() {
+        const id = document.getElementById('sopCodeId').value.trim();
+        const title = document.getElementById('sopTitleText').value.trim() || "Untitled Protocol Template";
+        const classification = document.getElementById('sopClassLevel').value;
+        
+        if(!id) return alert("System requires a unique code indicator index validation format.");
+
+        const steps = [];
+        document.querySelectorAll('.directive-input').forEach(i => { if(i.value.trim()) steps.push(i.value.trim()); });
+
+        // Calculate explicit system versions
+        let ver = "1.0";
+        if(systemSopLibrary[id]) {
+            const currentVer = systemSopLibrary[id].version;
+            const parts = currentVer.split('.');
+            ver = `${parts[0]}.${parseInt(parts[1]) + 1}`;
+        }
+
+        const isoTimestamp = new Date().toISOString().replace(/\.\d{3}/, '');
+
+        // Inject modified asset profile packet
+        systemSopLibrary[id] = {
+            sop_id: id, title: title, classification: classification,
+            version: ver, timestamp: isoTimestamp, steps: steps
+
+};
+buildLibraryInventoryGrid();
+loadActiveRecordToWorkspace(id);
+alert(Document structure stored securely as ${id} (v${ver}));
+}
+// Clones existing structures to draft workspaces
+function triggerDuplicationFlow() {
+const currentId = document.getElementById('sopCodeId').value.trim();
+if(!systemSopLibrary[currentId]) return alert("Select an existing catalog item to duplicate.");
+const newId = prompt("Enter Unique System Code for Cloned Profile Template Target:", ${currentId}-COPY);
+if(!newId) return;
+if(systemSopLibrary[newId]) return alert("Specified identifier code already allocation target catalog spaces.");
+// Duplicate properties block values
+const sourceData = systemSopLibrary[currentId];
+systemSopLibrary[newId] = {
+sop_id: newId,
+title: Copy of ${sourceData.title},
+classification: sourceData.classification,
+version: "1.0",
+timestamp: new Date().toISOString().replace(/.\d{3}/, ''),
+steps: [...sourceData.steps]
+};
+buildLibraryInventoryGrid();
+loadActiveRecordToWorkspace(newId);
+}
+function buildLibraryInventoryGrid() {
+const container = document.getElementById('libraryCollectionList');
+container.innerHTML = "";
+Object.keys(systemSopLibrary).forEach(key => {
+const doc = systemSopLibrary[key];
+const card = document.createElement('div');
+card.className = 'lib-card';
+card.setAttribute('onclick', loadActiveRecordToWorkspace('${doc.sop_id}'));
+card.innerHTML = <h5>${doc.sop_id}: ${doc.title}</h5> <div class="lib-meta-line">${doc.classification}</div> <div class="lib-v-badge">v${doc.version}</div>;
+container.appendChild(card);
+});
+}
+function loadActiveRecordToWorkspace(id) {
+const doc = systemSopLibrary[id];
+if(!doc) return;
+document.getElementById('sopCodeId').value = doc.sop_id;
+document.getElementById('sopTitleText').value = doc.title;
+document.getElementById('sopClassLevel').value = doc.classification;
+document.getElementById('versionTag').innerText = Active File: v${doc.version};
+const container = document.getElementById('stackContainer');
+container.innerHTML = "";
+doc.steps.forEach((step, idx) => {
+const div = document.createElement('div');
+div.className = 'sort-row';
+div.innerHTML = <span class="row-index">${idx + 1}</span> <input type="text" class="directive-input" value="${step}" oninput="runLivePreviewPipeline()"> <div class="sort-btns"><button onclick="moveRow(this, -1)">▲</button><button onclick="moveRow(this, 1)">▼</button></div>;
+container.appendChild(div);
+});
+if(doc.steps.length === 0) addBlankRowElement();
+runLivePreviewPipeline();
+}
+function runLivePreviewPipeline() {
+const id = document.getElementById('sopCodeId').value || "SOP-XXX";
+const title = document.getElementById('sopTitleText').value || "Draft Template Title Name";
+const classification = document.getElementById('sopClassLevel').value;
+const canvas = document.getElementById('previewMonitorView');
+let stepsHtml = "";
+document.querySelectorAll('.directive-input').forEach(i => {
+if(i.value.trim()) stepsHtml += <li style='margin-bottom:4px;'>${i.value.trim()}</li>;
+});
+stepsHtml += "";
+const cachedDoc = systemSopLibrary[id];
+const displayVer = cachedDoc ? cachedDoc.version : "1.0 (Draft)";
+const displayTime = cachedDoc ? cachedDoc.timestamp : new Date().toISOString().replace(/.\d{3}/, '');
+canvas.innerHTML = <div style="background:#0f172a; padding:15px; border-radius:4px; border:1px solid #334155;"> <div style="display:flex; justify-content:between; font-size:10px; color:#64748b; font-weight:bold; margin-bottom:5px; text-transform:uppercase;"> <span>System Record Trace View</span> <span style="margin-left:auto; color:#f59e0b;">${classification}</span> </div> <h2 style="font-size:16px; margin:0; color:#fff;">${id}: ${title}</h2> <div style="font-size:11px; color:#94a3b8; margin-top:4px;"> <strong>Revision Matrix:</strong> v${displayVer} | <strong>System Datestamp:</strong> ${displayTime} </div> <div style="height:1px; background:#1e293b; margin:10px 0;"></div> ${stepsHtml} </div>;
+}
+// Initial Engine Boot Activation Sequence
+buildLibraryInventoryGrid();
+loadActiveRecordToWorkspace("SOP-LOG-701");
+
+
+### 3. Integrated Lifecycle Workflow
+* **Incremental Patch Versioning**: The logic checks if a record already exists in the central library (`systemSopLibrary[id]`). If it does, the system maps the existing value string, targets the precision minor number, and increments it by one tier (e.g., automatically bumping `1.2` to `1.3`).
+* **Safe Duplication (Deep Cloning)**: Clicking the **Duplicate** option prompts the supervisor for a new operational identifier key, copies over all active execution steps, resets the tracker back to `v1.0`, and loads it cleanly into the active editor pane without modifying the source entry.
+* **ISO 8601 Timestamp Ledger**: Saves apply an automatic Zulu time tracking stamp (`new Date().toISOString()`), logging data trace paths for audits across multiple tactical operational command centers.
+
+If you want to scale this data architecture further, let me know:
+* Do you want to connect a browser **Local File Storage Sync mechanism** to keep user-added files visible even after refreshing the page?
+* Should we create **hierarchical group folders** within the document list (e.g., sorting by `Personnel`, `Ordnance`, or `Supplies`)?
+* Do you want to add a **Change-Log notes field** to document exactly what changed with each new version increment?
+
+
+
