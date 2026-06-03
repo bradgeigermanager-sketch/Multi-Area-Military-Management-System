@@ -167,4 +167,9 @@ html_layout = f"""<!DOCTYPE html>
             const cards = document.querySelectorAll('.kb-card');
             cards.forEach(card => {{
                 const cardCat = card.getAttribute('data-category');
-  
+                const cardText = card.innerText.toLowerCase();
+                const matchCat = (category === 'all' || category === cardCat);
+                const matchSearch = cardText.includes(query);
+                if (matchCat && matchSearch) {{card.style.display = 'flex';}} 
+                else {{card.style.display = 'none';}}}});}}"""with open('index.html', 'w') as f:f.write(html_layout)
+                print("[INFO] Production interface 'index.html' written cleanly with real-time UI knowledge base filters.")
