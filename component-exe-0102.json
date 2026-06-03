@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org",
+  "$id": "https://hq.mil",
+  "type": "object",
+  "required": ["component_metadata", "action_directive", "expected_result", "critical_fault_action"],
+  "additionalProperties": false,
+  "properties": {
+    "component_metadata": {
+      "type": "object",
+      "required": ["uid", "classification", "label", "author"],
+      "properties": {
+        "uid": { "type": "string", "const": "CMP-EXE-0102" },
+        "classification": { "type": "string", "enum": ["UNCLASSIFIED", "CONFIDENTIAL", "SECRET"] },
+        "label": { "type": "string" },
+        "author": { "type": "string" }
+      }
+    },
+    "action_directive": { "type": "string" },
+    "expected_result": { "type": "string" },
+    "critical_fault_action": { "type": "string" }
+  }
+}
