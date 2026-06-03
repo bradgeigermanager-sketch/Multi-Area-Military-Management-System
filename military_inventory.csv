@@ -1,0 +1,4 @@
+zone_id,location,commanding_officer,active_duty,medical_staff,rations_days,medical_kits,fuel_liters,5.56mm_rounds,120mm_shells,anti_tank_missiles,m1a2_tanks,m2_bradleys,uavs
+ZONE-ALPHA,Sector 4-North,Col. J. Vance,1250,45,45,850,120000,500000,320,45,12,24,8
+ZONE-BRAVO,Sector 9-Delta,Lt. Col. A. Reyes,850,30,30,400,75000,350000,150,20,6,16,4
+  
