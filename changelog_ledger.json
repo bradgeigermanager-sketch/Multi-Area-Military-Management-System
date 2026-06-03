@@ -1,0 +1,20 @@
+[
+  {
+    "build_id": "BLD-A3F9D27B",
+    "sop_id": "SOP-LOG-701",
+    "timestamp": "2026-06-03T01:22:00Z",
+    "version": "1.0",
+    "operator_id": "Capt. E. Miller",
+    "change_summary": "Initial baseline deployment of fuel redistribute routing matrix guidelines.",
+    "impact_tags": ["ROUTINE", "PATCH"]
+  },
+  {
+    "build_id": "BLD-E8C2B114",
+    "sop_id": "SOP-LOG-701",
+    "timestamp": "2026-06-03T01:25:30Z",
+    "version": "1.1",
+    "operator_id": "Col. J. Vance",
+    "change_summary": "Added grounding track verification line step to counter static charges.",
+    "impact_tags": ["SECURITY", "CRITICAL"]
+  }
+]
