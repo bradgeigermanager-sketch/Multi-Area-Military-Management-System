@@ -1,0 +1,57 @@
+{
+  "system_metadata": {
+    "classification": "CONFIDENTIAL",
+    "last_updated": "2026-06-03T00:39:00Z"
+  },
+  "garrisons": [
+    {
+      "zone_id": "ZONE-ALPHA",
+      "location": "Sector 4-North",
+      "personnel": {
+        "active_duty": 1250,
+        "medical_staff": 45,
+        "commanding_officer": "Col. J. Vance"
+      },
+      "supplies": {
+        "rations_days": 45,
+        "medical_kits": 850,
+        "fuel_liters": 120000
+      },
+      "ordnance": {
+        "5.56mm_rounds": 500000,
+        "120mm_shells": 320,
+        "anti_tank_missiles": 45
+      },
+      "equipment": {
+        "m1a2_tanks": 12,
+        "m2_bradleys": 24,
+        "unmanned_aerial_vehicles": 8
+      }
+    },
+    {
+      "zone_id": "ZONE-BRAVO",
+      "location": "Sector 9-Delta",
+      "personnel": {
+        "active_duty": 850,
+        "medical_staff": 30,
+        "commanding_officer": "Lt. Col. A. Reyes"
+      },
+      "supplies": {
+        "rations_days": 30,
+        "medical_kits": 400,
+        "fuel_liters": 75000
+      },
+      "ordnance": {
+        "5.56mm_rounds": 350000,
+        "120mm_shells": 150,
+        "anti_tank_missiles": 20
+      },
+      "equipment": {
+        "m1a2_tanks": 6,
+        "m2_bradleys": 16,
+        "unmanned_aerial_vehicles": 4
+      }
+    }
+  ]
+}
+
