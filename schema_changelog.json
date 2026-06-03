@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org",
+  "title": "Atomic Schema: Document Change Ledger Entry",
+  "type": "object",
+  "required": ["build_id", "sop_id", "timestamp", "version", "operator_id", "change_summary", "impact_tags"],
+  "additionalProperties": false,
+  "properties": {
+    "build_id": { 
+      "type": "string", 
+      "pattern": "^BLD-[A-F0-9]{8}$",
+      "description": "Unique automated execution hex identifier hash."
+    },
+    "sop_id": { 
+      "type": "string", 
+      "pattern": "^SOP-[A-Z]{3}-\\d{3}$"
+    },
+    "timestamp": { 
+      "type": "string", 
+      "format": "date-time",
+      "description": "ISO 8601 UTC build / publish date-timestamp."
+    },
+    "version": { 
+      "type": "string", 
+      "pattern": "^\\d+\\.\\d+$" 
+    },
+    "operator_id": { 
+      "type": "string", 
+      "description": "Callsign or ID of the publishing officer."
+    },
+    "change_summary": { 
+      "type": "string", 
+      "minLength": 10,
+      "description": "Detailed description of structural changes made."
+    },
+    "impact_tags": {
+      "type": "array",
+      "items": { "type": "string", "enum": ["CRITICAL", "ROUTINE", "SECURITY", "PATCH", "EQUIPMENT"] }
+    }
+  }
+}
