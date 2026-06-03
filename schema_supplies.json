@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org",
+  "title": "Atomic Schema: Supplies Component",
+  "type": "object",
+  "required": ["rations_days", "medical_kits", "fuel_liters"],
+  "additionalProperties": false,
+  "properties": {
+    "rations_days": { 
+      "type": "integer", 
+      "minimum": 0,
+      "description": "Number of days remaining of food/water rations."
+    },
+    "medical_kits": { 
+      "type": "integer", 
+      "minimum": 0,
+      "description": "Total count of available individual first-aid kits."
+    },
+    "fuel_liters": { 
+      "type": "integer", 
+      "minimum": 0,
+      "description": "Total tactical fuel reserves measured in liters."
+    }
+  }
+}
