@@ -1,0 +1,29 @@
+[
+  {
+    "type": "HAZMAT_SAFETY",
+    "data": {
+      "header": { "component_id": "CMP-HAZ-0012", "type": "HAZMAT_SAFETY", "label": "Liquid Fuel Handling Safeguards" },
+      "hazard_class": "CLASS_3_FLAMMABLE",
+      "ppe_required": ["Static-Dissipative Coveralls", "Nitrile Chemical Gloves", "Eye Protection"],
+      "neutralization_agent": "Class B CO2 Fire Extinguisher / Dry Sand Sandbags"
+    }
+  },
+  {
+    "type": "COMMS_PROTOCOL",
+    "data": {
+      "header": { "component_id": "CMP-COM-0045", "type": "COMMS_PROTOCOL", "label": "Fuel Farm Secure Transfer Comms" },
+      "frequency_mhz": 142.55,
+      "encryption_key_id": "KEY-X992",
+      "check_in_interval_mins": 15
+    }
+  },
+  {
+    "type": "EXECUTION_STEP",
+    "data": {
+      "header": { "component_id": "CMP-EXE-0102", "type": "EXECUTION_STEP", "label": "Auxiliary Pump Startup Sequence" },
+      "action_directive": "Rotate the primary bypass valve handle exactly 90 degrees counter-clockwise.",
+      "expected_result": "Line pressure telemetry stabilizes between 45 and 55 PSI.",
+      "critical_fault_action": "Hit Emergency Cutoff Switch E-1 immediately and broadcast 'BREAK BREAK' on active comms channel."
+    }
+  }
+]
