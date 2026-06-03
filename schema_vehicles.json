@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org",
+  "title": "Atomic Schema: Equipment Component",
+  "type": "object",
+  "required": ["m1a2_tanks", "m2_bradleys", "unmanned_aerial_vehicles"],
+  "additionalProperties": false,
+  "properties": {
+    "m1a2_tanks": { 
+      "type": "integer", 
+      "minimum": 0,
+      "description": "Active main battle tank fleet count."
+    },
+    "m2_bradleys": { 
+      "type": "integer", 
+      "minimum": 0,
+      "description": "Active infantry fighting vehicle fleet count."
+    },
+    "unmanned_aerial_vehicles": { 
+      "type": "integer", 
+      "minimum": 0,
+      "description": "Active operational reconnaissance drone units."
+    }
+  }
+}
