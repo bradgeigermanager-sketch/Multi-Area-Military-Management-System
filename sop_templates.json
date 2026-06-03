@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org",
+  "title": "Military SOP Template Library",
+  "description": "Validation structures for tactical knowledgebase documents",
+  "$defs": {
+    "base_metadata": {
+      "type": "object",
+      "required": ["sop_id", "version", "security_classification", "effective_date", "author_signoff"],
+      "properties": {
+        "sop_id": { "type": "string", "pattern": "^SOP-[A-Z]{3}-\\d{3}$" },
+        "version": { "type": "string", "pattern": "^\\d+\\.\\d+$" },
+        "security_classification": { "type": "string", "enum": ["UNCLASSIFIED", "CONFIDENTIAL", "SECRET"] },
+        "effective_date": { "type": "string", "format": "date" },
+        "author_signoff": { "type": "string" }
+      }
+    },
+    "logistics_template": {
+      "type": "object",
+      "required": ["metadata", "storage_constraints", "inventory_thresholds", "handling_steps"],
+      "properties": {
+        "metadata": { "$ref": "#/$defs/base_metadata" },
+        "storage_constraints": {
+          "type": "object",
+          "required": ["temperature_celsius", "humidity_max_percent", "hazmat_class"],
+          "properties": {
+            "temperature_celsius": { "type": "string" },
+            "humidity_max_percent": { "type": "integer", "maximum": 100 },
+            "hazmat_class": { "type": "string" }
+          }
+        },
+        "inventory_thresholds": {
+          "type": "object",
+          "required": ["minimum_reserve", "reorder_trigger_point"],
+          "properties": {
+            "minimum_reserve": { "type": "integer" },
+            "reorder_trigger_point": { "type": "integer" }
+          }
+        },
+        "handling_steps": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "maintenance_template": {
+      "type": "object",
+      "required": ["metadata", "target_equipment", "required_tools", "pre_check_steps", "execution_steps"],
+      "properties": {
+        "metadata": { "$ref": "#/$defs/base_metadata" },
+        "target_equipment": { "type": "string" },
+        "required_tools": { "type": "array", "items": { "type": "string" } },
+        "pre_check_steps": { "type": "array", "items": { "type": "string" } },
+        "execution_steps": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "emergency_template": {
+      "type": "object",
+      "required": ["metadata", "trigger_condition", "immediate_actions", "evacuation_route", "comms_frequency"],
+      "properties": {
+        "metadata": { "$ref": "#/$defs/base_metadata" },
+        "trigger_condition": { "type": "string" },
+        "immediate_actions": { "type": "array", "items": { "type": "string" } },
+        "evacuation_route": { "type": "string" },
+        "comms_frequency": { "type": "string", "pattern": "^\\d{3}\\.\\d{3}\\s*MHz$" }
+      }
+    }
+  }
+}
