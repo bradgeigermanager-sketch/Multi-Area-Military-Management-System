@@ -1,0 +1,184 @@
+<div class="sop-workspace">
+    
+    <!-- Left Configuration Entry Console -->
+    <div class="control-console">
+        <h3>Modular Checklist & Directory Builder</h3>
+        
+        <!-- Document Header Inputs -->
+        <div class="input-group">
+            <label>Document Identification Code</label>
+            <input type="text" id="sopCode" value="SOP-MNT-104" oninput="renderLivePreview()">
+        </div>
+        <div class="input-group">
+            <label>Procedure Title String</label>
+            <input type="text" id="sopTitleStr" value="Main Battle Tank Armor Verification Matrix" oninput="renderLivePreview()">
+        </div>
+
+        <!-- Directory / Table of Contents Builder Section -->
+        <div class="section-divider">Directory Hyperlink Anchors</div>
+        <div class="input-group">
+            <label>TOC Navigation Link Title</label>
+            <input type="text" id="tocLabel" value="Primary Action Checklist Table">
+            <label>Internal Anchor Element ID Target</label>
+            <input type="text" id="tocAnchor" value="#checklist-section" placeholder="#element-id">
+            <button class="action-btn-sm" onclick="addTocItem()">Insert Hyperlink Node</button>
+        </div>
+
+        <!-- Sequential Step Reordering Module -->
+        <div class="section-divider">Step Sequence & Ordering Controls</div>
+        <div id="reorderContainer" class="step-stack">
+            <div class="step-node">
+                <span class="index-badge">1</span>
+                <input type="text" class="step-text-val" value="Audit front-facing composite armor hull configurations." oninput="renderLivePreview()">
+                <div class="btn-cluster">
+                    <button onclick="shiftNode(this, -1)">▲</button>
+                    <button onclick="shiftNode(this, 1)">▼</button>
+                </div>
+            </div>
+            <div class="step-node">
+                <span class="index-badge">2</span>
+                <input type="text" class="step-text-val" value="Cross-reference field telemetry data logs with headquarters registers." oninput="renderLivePreview()">
+                <div class="btn-cluster">
+                    <button onclick="shiftNode(this, -1)">▲</button>
+                    <button onclick="shiftNode(this, 1)">▼</button>
+                </div>
+            </div>
+        </div>
+        <button class="secondary-btn" onclick="appendBlankStepRow()">+ Append New Directive Step</button>
+    </div>
+
+    <!-- Right Live Render Display Panel -->
+    <div class="display-panel">
+        <div class="panel-banner">OPERATIONAL MULTI-ZONE SECURE MONITOR PREVIEW</div>
+        <div class="panel-body" id="previewCanvas">
+            <!-- Dynamic components inject seamlessly via Javascript functions -->
+        </div>
+    </div>
+</div>
+
+<style>
+    .sop-workspace { display: flex; gap: 25px; font-family: system-ui, -apple-system, sans-serif; background: #0b0f19; padding: 20px; border-radius: 8px; color: #e2e8f0; }
+    .control-console { flex: 1.2; display: flex; flex-direction: column; gap: 14px; background: #141b2d; padding: 20px; border-radius: 6px; border: 1px solid #1f293d; }
+    .display-panel { flex: 1.5; background: #1e293b; border-radius: 6px; border: 1px solid #334155; display: flex; flex-direction: column; }
+    h3 { margin: 0 0 10px 0; font-size: 15px; text-transform: uppercase; color: #38bdf8; border-left: 3px solid #38bdf8; padding-left: 10px; letter-spacing: 0.5px; }
+    .section-divider { font-size: 11px; text-transform: uppercase; color: #94a3b8; font-weight: 700; background: #0f172a; padding: 6px 10px; border-radius: 4px; margin-top: 10px; }
+    .input-group { display: flex; flex-direction: column; gap: 4px; }
+    label { font-size: 10px; text-transform: uppercase; color: #64748b; font-weight: 600; margin-top: 4px; }
+    input { background: #0b0f19; border: 1px solid #2d3748; padding: 8px 12px; border-radius: 4px; color: white; font-size: 13px; }
+    input:focus { outline: 1px solid #38bdf8; }
+    
+    /* Interactive Ordering Row Controls */
+    .step-stack { display: flex; flex-direction: column; gap: 8px; margin-top: 5px; }
+    .step-node { display: flex; align-items: center; gap: 10px; background: #0f172a; padding: 8px 12px; border-radius: 4px; border: 1px solid #1e293b; }
+    .index-badge { font-family: monospace; font-weight: bold; color: #38bdf8; width: 15px; }
+    .step-text-val { flex: 1; background: #141b2d; border-color: #334155; }
+    .btn-cluster { display: flex; flex-direction: column; gap: 2px; }
+    .btn-cluster button { background: #1f293d; border: 1px solid #334155; color: #94a3b8; font-size: 8px; padding: 2px 5px; cursor: pointer; border-radius: 2px; }
+    .btn-cluster button:hover { background: #38bdf8; color: #0f172a; }
+    
+    .action-btn-sm { background: #38bdf8; color: #0b0f19; font-weight: bold; font-size: 11px; border: none; padding: 6px; border-radius: 4px; cursor: pointer; margin-top: 8px; text-transform: uppercase; }
+    .secondary-btn { background: transparent; border: 1px dashed #475569; color: #94a3b8; padding: 8px; border-radius: 4px; cursor: pointer; font-size: 11px; text-transform: uppercase; margin-top: 5px; }
+    
+    /* Live Preview Screen Layout Styling */
+    .panel-banner { background: #0b0f19; color: #64748b; padding: 10px 15px; font-size: 10px; font-weight: bold; letter-spacing: 0.5px; border-radius: 6px 6px 0 0; border-bottom: 1px solid #2d3748; }
+    .panel-body { padding: 25px; overflow-y: auto; color: #cbd5e1; font-size: 14px; }
+    .panel-body h1 { font-size: 20px; color: white; margin: 0 0 5px 0; }
+    .doc-link { color: #38bdf8; text-decoration: none; font-weight: 500; }
+    .doc-link:hover { text-decoration: underline; }
+    
+    /* Document Component Output Tables */
+    .preview-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 12px; border: 1px solid #334155; text-align: left; }
+    .preview-table th { background: #0f172a; color: #38bdf8; padding: 8px 12px; text-transform: uppercase; font-size: 11px; }
+    .preview-table td { padding: 8px 12px; border-bottom: 1px solid #334155; background: #141b2d; }
+</style>
+
+<script>
+    // Storage Array for active Directory Link Entities
+    let directoryLinks = [
+        { label: "Internal Task Guideline Verification List", target: "#checklist-section" },
+        { label: "Secure External Node Registry Access Link", target: "https://hq.mil" }
+    ];
+
+    // Execution Sequence Manipulation Loop (Move Up/Down Logic)
+    def=function shiftNode(button, direction) {
+        const node = button.closest('.step-node');
+        const parent = node.parentNode;
+        const index = Array.from(parent.children).indexOf(node);
+        const targetIndex = index + direction;
+
+        if (targetIndex >= 0 && targetIndex < parent.children.length) {
+            if (direction === 1) {
+                parent.insertBefore(parent.children[targetIndex], node);
+            } else {
+                parent.insertBefore(node, parent.children[targetIndex]);
+            }
+            normalizeIndexLabels();
+            renderLivePreview();
+        }
+    }
+
+    function appendBlankStepRow() {
+        const container = document.getElementById('reorderContainer');
+        const nextNum = container.children.length + 1;
+        
+        const node = document.createElement('div');
+        node.className = 'step-node';
+        node.innerHTML = `
+            <span class="index-badge">${nextNum}</span>
+            <input type="text" class="step-text-val" placeholder="Specify tactical procedure action target..." oninput="renderLivePreview()">
+            <div class="btn-cluster">
+                <button onclick="shiftNode(this, -1)">▲</button>
+                <button onclick="shiftNode(this, 1)">▼</button>
+            </div>
+        `;
+        container.appendChild(node);
+        renderLivePreview();
+    }
+
+    function normalizeIndexLabels() {
+        document.querySelectorAll('.step-stack .step-node').forEach((node, i) => {
+            node.querySelector('.index-badge').innerText = i + 1;
+        });
+    }
+
+    function addTocItem() {
+        const lbl = document.getElementById('tocLabel').value.trim();
+        const trg = document.getElementById('tocAnchor').value.trim();
+        if(lbl && trg) {
+            directoryLinks.push({ label: lbl, target: trg });
+            renderLivePreview();
+        }
+    }
+
+    // Master Live Assembler Pipeline
+    function renderLivePreview() {
+        const code = document.getElementById('sopCode').value || "SOP-XXX";
+        const title = document.getElementById('sopTitleStr').value || "Procedure Document Title";
+        const canvas = document.getElementById('previewCanvas');
+        
+        // Assemble Directory Header Strings
+        let tocHtml = "<ul>";
+        directoryLinks.forEach(lnk => {
+            tocHtml += `<li><a href="${lnk.target}" class="doc-link">${lnk.label} (${lnk.target})</a></li>`;
+        });
+        tocHtml += "</ul>";
+
+        // Assemble Ordered Operational Steps
+        let stepsHtml = "<ol>";
+        document.querySelectorAll('.step-text-val').forEach(input => {
+            if(input.value.trim() !== "") {
+                stepsHtml += `<li>${input.value.trim()}</li>`;
+            }
+        });
+        stepsHtml += "</ol>";
+
+        // Build Markdown-Equivalent Output Elements with Functional Hyperlinks
+        canvas.innerHTML = `
+            <h1>${code}: ${title}</h1>
+            <div style="font-size:11px; color:#64748b; font-weight:bold; margin-bottom:15px;">STATUS: ACTIVE PRODUCTION INTERFACE</div>
+            
+            <h4 style="margin:15px 0 5px 0; color:#38bdf8; text-transform:uppercase; font-size:11px;">Document Directory (Table of Contents)</h4>
+            ${tocHtml}
+            
+            <h4 id="checklist-section" style="margin:20px 0 5px 0; color:#38bdf8; text-transform:uppercase; font-size:11px;">Interactive Operational Audit Logs Checklist</h4>
+            <table class="preview-table">
