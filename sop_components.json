@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org",
+  "title": "Tactical SOP Component Library Definitions",
+  "$defs": {
+    "component_header": {
+      "type": "object",
+      "required": ["component_id", "type", "label"],
+      "properties": {
+        "component_id": { "type": "string", "pattern": "^CMP-[A-Z]{3}-\\d{4}$" },
+        "type": { "type": "string", "enum": ["HAZMAT_SAFETY", "REQUIRED_EQUIPMENT", "COMMS_PROTOCOL", "EXECUTION_STEP"] },
+        "label": { "type": "string" }
+      }
+    },
+    "hazmat_safety": {
+      "type": "object",
+      "required": ["header", "hazard_class", "ppe_required", "neutralization_agent"],
+      "properties": {
+        "header": { "$ref": "#/$defs/component_header" },
+        "hazard_class": { "type": "string", "enum": ["CLASS_3_FLAMMABLE", "CLASS_6_TOXIC", "CLASS_9_MISC"] },
+        "ppe_required": { "type": "array", "items": { "type": "string" } },
+        "neutralization_agent": { "type": "string" }
+      }
+    },
+    "required_equipment": {
+      "type": "object",
+      "required": ["header", "tools_list", "calibration_verified"],
+      "properties": {
+        "header": { "$ref": "#/$defs/component_header" },
+        "tools_list": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["tool_name", "nsn_code"],
+            "properties": {
+              "tool_name": { "type": "string" },
+              "nsn_code": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{3}-\\d{4}$" }
+            }
+          }
+        },
+        "calibration_verified": { "type": "boolean" }
+      }
+    },
+    "comms_protocol": {
+      "type": "object",
+      "required": ["header", "frequency_mhz", "encryption_key_id", "check_in_interval_mins"],
+      "properties": {
+        "header": { "$ref": "#/$defs/component_header" },
+        "frequency_mhz": { "type": "number", "minimum": 30.0, "maximum": 512.0 },
+        "encryption_key_id": { "type": "string", "pattern": "^KEY-[A-Z0-9]{4}$" },
+        "check_in_interval_mins": { "type": "integer", "minimum": 5 }
+      }
+    },
+    "execution_step": {
+      "type": "object",
+      "required": ["header", "action_directive", "expected_result", "critical_fault_action"],
+      "properties": {
+        "header": { "$ref": "#/$defs/component_header" },
+        "action_directive": { "type": "string" },
+        "expected_result": { "type": "string" },
+        "critical_fault_action": { "type": "string" }
+      }
+    }
+  }
+}
