@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org",
+  "title": "Atomic Schema: Ordnance Component",
+  "type": "object",
+  "required": ["5.56mm_rounds", "120mm_shells", "anti_tank_missiles"],
+  "additionalProperties": false,
+  "properties": {
+    "5.56mm_rounds": { 
+      "type": "integer", 
+      "minimum": 0,
+      "description": "Count of small arms ammunition stockpiled."
+    },
+    "120mm_shells": { 
+      "type": "integer", 
+      "minimum": 0,
+      "description": "Count of main battle tank heavy munitions."
+    },
+    "anti_tank_missiles": { 
+      "type": "integer", 
+      "minimum": 0,
+      "description": "Count of guided anti-armor missile systems."
+    }
+  }
+}
