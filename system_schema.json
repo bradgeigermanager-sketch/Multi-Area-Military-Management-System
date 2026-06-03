@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org",
+  "title": "Military Management System Schema",
+  "type": "object",
+  "required": ["system_metadata", "garrisons"],
+  "properties": {
+    "system_metadata": { "$ref": "definitions.json#/$defs/metadata" },
+    "garrisons": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["zone_id", "location", "personnel", "supplies", "ordnance", "equipment"],
+        "properties": {
+          "zone_id": { "type": "string", "pattern": "^ZONE-[A-Z]+$" },
+          "location": { "type": "string" },
+          "personnel": { "$ref": "definitions.json#/$defs/personnel" },
+          "supplies": { "$ref": "definitions.json#/$defs/supplies" },
+          "ordnance": { "$ref": "definitions.json#/$defs/ordnance" },
+          "equipment": { "$ref": "definitions.json#/$defs/equipment" }
+        }
+      }
+    }
+  }
+}
+
