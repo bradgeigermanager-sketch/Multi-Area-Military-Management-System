@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org",
+  "title": "Atomic Schema: Personnel Component",
+  "type": "object",
+  "required": ["active_duty", "medical_staff", "commanding_officer"],
+  "additionalProperties": false,
+  "properties": {
+    "active_duty": { 
+      "type": "integer", 
+      "minimum": 0,
+      "description": "Total count of active combat-ready troops."
+    },
+    "medical_staff": { 
+      "type": "integer", 
+      "minimum": 0,
+      "description": "Total count of deployed medical field officers."
+    },
+    "commanding_officer": { 
+      "type": "string", 
+      "minLength": 3,
+      "pattern": "^[A-Za-z.\\s]+$",
+      "description": "Rank and name of the commanding officer."
+    }
+  }
+}
