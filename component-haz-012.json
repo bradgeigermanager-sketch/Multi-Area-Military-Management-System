@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org",
+  "$id": "https://hq.mil",
+  "type": "object",
+  "required": ["component_metadata", "hazard_class", "ppe_required", "neutralization_agent"],
+  "additionalProperties": false,
+  "properties": {
+    "component_metadata": {
+      "type": "object",
+      "required": ["uid", "classification", "label", "author"],
+      "properties": {
+        "uid": { "type": "string", "const": "CMP-HAZ-0012" },
+        "classification": { "type": "string", "enum": ["UNCLASSIFIED", "CONFIDENTIAL", "SECRET"] },
+        "label": { "type": "string" },
+        "author": { "type": "string" }
+      }
+    },
+    "hazard_class": { "type": "string", "enum": ["CLASS_3_FLAMMABLE", "CLASS_6_TOXIC", "CLASS_9_MISC"] },
+    "ppe_required": { "type": "array", "items": { "type": "string" } },
+    "neutralization_agent": { "type": "string" }
+  }
+}
