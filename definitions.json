@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org",
+  "$id": "https://management.system",
+  "title": "Military Logistics Definitions Library",
+  "$defs": {
+    "metadata": {
+      "type": "object",
+      "required": ["classification", "last_updated"],
+      "properties": {
+        "classification": { 
+          "type": "string", 
+          "enum": ["UNCLASSIFIED", "CONFIDENTIAL", "SECRET", "TOP SECRET"] 
+        },
+        "last_updated": { "type": "string", "format": "date-time" }
+      }
+    },
+    "personnel": {
+      "type": "object",
+      "required": ["active_duty", "medical_staff", "commanding_officer"],
+      "properties": {
+        "active_duty": { "type": "integer", "minimum": 0 },
+        "medical_staff": { "type": "integer", "minimum": 0 },
+        "commanding_officer": { "type": "string", "minLength": 3 }
+      }
+    },
+    "supplies": {
+      "type": "object",
+      "required": ["rations_days", "medical_kits", "fuel_liters"],
+      "properties": {
+        "rations_days": { "type": "integer", "minimum": 0 },
+        "medical_kits": { "type": "integer", "minimum": 0 },
+        "fuel_liters": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "ordnance": {
+      "type": "object",
+      "required": ["5.56mm_rounds", "120mm_shells", "anti_tank_missiles"],
+      "properties": {
+        "5.56mm_rounds": { "type": "integer", "minimum": 0 },
+        "120mm_shells": { "type": "integer", "minimum": 0 },
+        "anti_tank_missiles": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "equipment": {
+      "type": "object",
+      "required": ["m1a2_tanks", "m2_bradleys", "unmanned_aerial_vehicles"],
+      "properties": {
+        "m1a2_tanks": { "type": "integer", "minimum": 0 },
+        "m2_bradleys": { "type": "integer", "minimum": 0 },
+        "unmanned_aerial_vehicles": { "type": "integer", "minimum": 0 }
+      }
+    }
+  }
+}
+
