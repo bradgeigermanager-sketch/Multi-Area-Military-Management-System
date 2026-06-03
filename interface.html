@@ -1,0 +1,111 @@
+<!-- Inject this element block directly into your master dashboard HTML framework -->
+<div class="sop-container">
+    <div class="sop-header">
+        <h2>Tactical SOP Registry & Templates</h2>
+        <button class="action-btn" onclick="openSopWizard()">+ New Template Draft</button>
+    </div>
+
+    <!-- Active Template Component Grid -->
+    <div class="sop-grid">
+        <div class="sop-card confidential">
+            <div class="sop-badge">CONFIDENTIAL</div>
+            <h3>SOP-LOG-001: Cold-Chain Med Storage</h3>
+            <p class="sop-meta"><strong>Effective:</strong> 2026-06-03 | <strong>Ver:</strong> 1.2</p>
+            <p class="summary-txt">Manages biological shelf life security limits within medical supply lines.</p>
+            <div class="sop-spec-box">
+                <div><strong>Min Threshold:</strong> 200 Units</div>
+                <div><strong>Temp Limit:</strong> 2°C - 8°C</div>
+            </div>
+        </div>
+        
+        <div class="sop-card unclassified">
+            <div class="sop-badge">UNCLASSIFIED</div>
+            <h3>SOP-MNT-002: UAV Pre-Flight Check</h3>
+            <p class="sop-meta"><strong>Effective:</strong> 2026-04-12 | <strong>Ver:</strong> 2.0</p>
+            <p class="summary-txt">Pre-launch diagnostic flow verification mapping for drone operations.</p>
+            <div class="sop-spec-box">
+                <div><strong>Target:</strong> UAV-V4 Fleet</div>
+                <div><strong>Tools:</strong> Cipher Loader</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Template Creation Modal Popup -->
+<div id="sopModal" class="modal-overlay">
+    <div class="modal-window">
+        <h3>Generate Tactical SOP Draft</h3>
+        <label for="templateSelector">Select Structure Archetype</label>
+        <select id="templateSelector" onchange="loadTemplateFields()">
+            <option value="logistics">Logistics & Storage Layout Blueprint</option>
+            <option value="maintenance">Equipment Calibration Blueprint</option>
+            <option value="emergency">Emergency Response Blueprint</option>
+        </select>
+        
+        <div id="dynamicFormFields" class="form-body">
+            <!-- Dynamic field configurations inject automatically here -->
+        </div>
+
+        <div class="modal-actions">
+            <button class="cancel-btn" onclick="closeSopWizard()">Discard</button>
+            <button class="save-btn" onclick="exportSopDraft()">Compile SOP</button>
+        </div>
+    </div>
+</div>
+
+<style>
+    .sop-container { background: #1e293b; padding: 20px; border-radius: 6px; margin-top: 20px; border: 1px solid #334155; }
+    .sop-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .action-btn { background: #38bdf8; color: #0f172a; border: none; padding: 10px 16px; font-weight: bold; border-radius: 4px; cursor: pointer; }
+    .sop-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+    .sop-card { background: #0f172a; border: 1px solid #334155; padding: 25px; border-radius: 6px; position: relative; }
+    .sop-badge { position: absolute; top: 15px; right: 15px; font-size: 10px; padding: 3px 8px; font-weight: bold; border-radius: 3px; background: #475569; }
+    .confidential { border-left: 4px solid #f59e0b; }
+    .unclassified { border-left: 4px solid #10b981; }
+    .sop-meta { font-size: 12px; color: #64748b; margin: 5px 0; }
+    .summary-txt { font-size: 14px; color: #94a3b8; }
+    .sop-spec-box { margin-top: 15px; background: #1e293b; padding: 10px; border-radius: 4px; font-size: 12px; color: #cbd5e1; display: flex; justify-content: space-between; }
+    
+    /* Overlay Window Frameworks */
+    .modal-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.75); align-items: center; justify-content: center; z-index: 1000; }
+    .modal-window { background: #1e293b; padding: 30px; border-radius: 6px; width: 450px; border: 1px solid #475569; }
+    .modal-window select, .modal-window input { width: 100%; padding: 10px; margin: 10px 0 20px 0; background: #0f172a; border: 1px solid #334155; color: white; border-radius: 4px; box-sizing: border-box; }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+    .cancel-btn { background: transparent; border: 1px solid #475569; color: #94a3b8; padding: 8px 16px; border-radius: 4px; cursor: pointer; }
+    .save-btn { background: #10b981; border: none; color: white; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+</style>
+
+<script>
+    function openSopWizard() {
+        document.getElementById('sopModal').style.display = 'flex';
+        loadTemplateFields();
+    }
+    function closeSopWizard() {
+        document.getElementById('sopModal').style.display = 'none';
+    }
+    function loadTemplateFields() {
+        const type = document.getElementById('templateSelector').value;
+        const targetDiv = document.getElementById('dynamicFormFields');
+        
+        if(type === 'logistics') {
+            targetDiv.innerHTML = `
+                <label>Target Temp Constraint</label><input type="text" id="val1" value="2C to 8C">
+                <label>Hazmat Protocol Class</label><input type="text" id="val2" value="Class 6.2">
+            `;
+        } else if(type === 'maintenance') {
+            targetDiv.innerHTML = `
+                <label>Target Heavy Equipment Asset</label><input type="text" id="val1" value="M1A2 Abrams Tank">
+                <label>Required Calibration Tools</label><input type="text" id="val2" value="Torque Sensor, Toolkit">
+            `;
+        } else {
+            targetDiv.innerHTML = `
+                <label>Immediate Evacuation Route</label><input type="text" id="val1" value="Grid Alpha-West Corridor">
+                <label>Secure Comms Channel (MHz)</label><input type="text" id="val2" value="142.550 MHz">
+            `;
+        }
+    }
+    function exportSopDraft() {
+        alert("System compiled input properties successfully against operational schema structures.");
+        closeSopWizard();
+    }
+</script>
