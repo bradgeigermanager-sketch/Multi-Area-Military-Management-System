@@ -1,0 +1,149 @@
+<!-- Inject this Component Blueprint Workspace into your dashboard framework window -->
+<div class="component-builder-layout">
+    
+    <!-- Component Asset Injection Tool Block -->
+    <div class="component-injector-card">
+        <h4>Component Core Block Library Injector</h4>
+        <p class="section-desc">Select and configure standard modules to append directly to your operational document recipes.</p>
+        
+        <div class="control-row-group">
+            <label>Component Target Module Type</label>
+            <select id="componentTypeSelector" onchange="toggleComponentFormFields()">
+                <option value="HAZMAT">HAZMAT_SAFETY MODULE</option>
+                <option value="COMMS">COMMS_PROTOCOL MODULE</option>
+                <option value="EXECUTION">EXECUTION_STEP MODULE</option>
+            </select>
+        </div>
+
+        <!-- Dynamic Form Fields Sandbox Area -->
+        <div id="dynamicComponentInputs" class="input-form-sandbox">
+            <!-- Structured inputs append instantly based on select values -->
+        </div>
+
+        <button class="add-component-btn" onclick="compileAndInsertComponentNode()">Inject Module into Document</button>
+    </div>
+
+    <!-- Active Procedure Construction Canvas View -->
+    <div class="canvas-preview-card">
+        <div class="canvas-banner">LIVE MODULAR DOCUMENT SCHEMA STREAM</div>
+        <div id="procedureAssemblyCanvas" class="canvas-body-timeline">
+            <!-- Inserted component module cards render here -->
+        </div>
+    </div>
+</div>
+
+<style>
+    .component-builder-layout { display: flex; gap: 20px; background: #0b0f19; padding: 15px; border-radius: 6px; border: 1px solid #1e293b; margin-top: 15px; font-family: system-ui, sans-serif; }
+    .component-injector-card { flex: 1; background: #141b2d; border: 1px solid #1f293d; padding: 18px; border-radius: 4px; display: flex; flex-direction: column; gap: 12px; }
+    .canvas-preview-card { flex: 1.4; background: #111827; border: 1px solid #374151; border-radius: 4px; display: flex; flex-direction: column; }
+    .section-desc { font-size: 11px; color: #64748b; margin: -8px 0 5px 0; }
+    .control-row-group { display: flex; flex-direction: column; gap: 4px; }
+    .input-form-sandbox { display: flex; flex-direction: column; gap: 10px; background: #0f172a; padding: 12px; border-radius: 4px; border: 1px solid #1e293b; margin: 4px 0; }
+    .add-component-btn { background: #38bdf8; color: #0f172a; border: none; padding: 10px; font-weight: bold; font-size: 11px; text-transform: uppercase; border-radius: 4px; cursor: pointer; margin-top: auto; }
+    .add-component-btn:hover { background: #0ea5e9; }
+    
+    /* Document Component Block Rendering Cards Layout */
+    .canvas-banner { background: #030712; padding: 8px 12px; font-size: 10px; color: #4b5563; font-weight: bold; border-bottom: 1px solid #374151; }
+    .canvas-body-timeline { padding: 15px; display: flex; flex-direction: column; gap: 12px; max-height: 380px; overflow-y: auto; }
+    
+    .comp-node-block { background: #1f2937; border-left: 4px solid #9ca3af; padding: 14px; border-radius: 4px; position: relative; }
+    .comp-node-block.hazmat { border-left-color: #f59e0b; background: rgba(245, 158, 11, 0.03); }
+    .comp-node-block.comms { border-left-color: #3b82f6; background: rgba(59, 130, 246, 0.03); }
+    .comp-node-block.execution { border-left-color: #10b981; background: rgba(16, 185, 129, 0.03); }
+    
+    .comp-node-id { font-family: monospace; font-size: 10px; color: #64748b; font-weight: bold; }
+    .comp-node-label { font-size: 14px; color: #fff; font-weight: 600; margin: 2px 0 8px 0; }
+    .comp-node-body-box { font-size: 12px; color: #cbd5e1; line-height: 1.4; background: #111827; padding: 8px; border-radius: 3px; border: 1px solid #374151; }
+    .delete-node-btn { position: absolute; top: 12px; right: 12px; background: transparent; border: none; color: #4b5563; cursor: pointer; font-size: 11px; }
+    .delete-node-btn:hover { color: #ef4444; }
+</style>
+
+<script>
+    // Local memory tracking segment array for components composition
+    let constructedProcedureBlocks = [];
+
+    function toggleComponentFormFields() {
+        const selectedType = document.getElementById('componentTypeSelector').value;
+        const targetFormSandbox = document.getElementById('dynamicComponentInputs');
+        
+        let fieldsHtml = `
+            <div class="control-row-group"><label>Component Reference Label</label><input type="text" id="cmpLabel" value="Standard Module Action Block"></div>
+        `;
+
+        if(selectedType === "HAZMAT") {
+            fieldsHtml += `
+                <div class="control-row-group"><label>Hazard Core Group Class</label>
+                <select id="cmpParam1"><option value="CLASS_3_FLAMMABLE">CLASS 3 FLAMMABLE LIQUID</option><option value="CLASS_6_TOXIC">CLASS 6.1 INHALATION TOXIC</option></select></div>
+                <div class="control-row-group"><label>Neutralization / Extinguish Strategy</label><input type="text" id="cmpParam2" value="Deploy dry sand arrays and CO2 canister overrides."></div>
+            `;
+        } else if(selectedType === "COMMS") {
+            fieldsHtml += `
+                <div class="control-row-group"><label>Tactical Freq Channel Line (MHz)</label><input type="text" id="cmpParam1" value="142.550"></div>
+                <div class="control-row-group"><label>Crypto Cipher Key Reference Identifier</label><input type="text" id="cmpParam2" value="KEY-X992"></div>
+            `;
+        } else {
+            fieldsHtml += `
+                <div class="control-row-group"><label>Mandatory Action Directive Directive</label><input type="text" id="cmpParam1" placeholder="Specify explicit field manual physical action step..."></div>
+                <div class="control-row-group"><label>Critical System Fault Recovery Safeguard</label><input type="text" id="cmpParam2" placeholder="Specify fallback command loop parameters if step breaches tolerances..."></div>
+            `;
+        }
+        
+        targetFormSandbox.innerHTML = fieldsHtml;
+    }
+
+    function compileAndInsertComponentNode() {
+        const typeKey = document.getElementById('componentTypeSelector').value;
+        const labelText = document.getElementById('cmpLabel').value.trim() || "Configured Step Module";
+        const param1 = document.getElementById('cmpParam1').value.trim();
+        const param2 = document.getElementById('cmpParam2').value.trim();
+
+        const generatedCmpId = "CMP-" + typeKey + "-" + Math.floor(1000 + Math.random() * 9000);
+
+        // Build component data packet structure mapped cleanly to rules specifications
+        let genericPayloadNode = { id: generatedCmpId, type: typeKey, label: labelText, p1: param1, p2: param2 };
+        constructedProcedureBlocks.push(genericPayloadNode);
+        
+        renderProcedureAssemblyCanvas();
+    }
+
+    function dropComponentNode(index) {
+        constructedProcedureBlocks.splice(index, 1);
+        renderProcedureAssemblyCanvas();
+    }
+
+    function renderProcedureAssemblyCanvas() {
+        const canvas = document.getElementById('procedureAssemblyCanvas');
+        canvas.innerHTML = "";
+
+        if(constructedProcedureBlocks.length === 0) {
+            canvas.innerHTML = `<div style="text-align:center; padding:40px; color:#4b5563; font-size:12px; font-weight:bold; letter-spacing:0.5px;">NO ACTIVE REUSABLE MODULE COMPONENTS LOADED IN RECIPE TREE</div>`;
+            return;
+        }
+
+        constructedProcedureBlocks.forEach((node, i) => {
+            const classRef = node.type.toLowerCase();
+            let customContentMetaBlock = "";
+
+            if(node.type === "HAZMAT") {
+                customContentMetaBlock = `<strong>Hazard Group Identity:</strong> ${node.p1}<br><strong>Mitigation Countermeasure:</strong> ${node.p2}`;
+            } else if(node.type === "COMMS") {
+                customContentMetaBlock = `<strong>Radio Frequency Line:</strong> ${node.p1} MHz | <strong>Cipher Block Token:</strong> ${node.p2}`;
+            } else {
+                customContentMetaBlock = `<strong>Action Task Instruction:</strong> ${node.p1}<br><span style="color:#ef4444;"><strong>Abort Safe Safeguard:</strong></span> ${node.p2}`;
+            }
+
+            canvas.innerHTML += `
+                <div class="comp-node-block ${classRef}">
+                    <span class="comp-node-id">${node.id}</span>
+                    <button class="delete-node-btn" onclick="dropComponentNode(${i})">✖ Drop Block</button>
+                    <div class="comp-node-label">${node.label}</div>
+                    <div class="comp-node-body-box">${customContentMetaBlock}</div>
+                </div>
+            `;
+        });
+    }
+
+    // Initialize layout default selections on container setup frames
+    toggleComponentFormFields();
+    renderProcedureAssemblyCanvas();
+</script>
